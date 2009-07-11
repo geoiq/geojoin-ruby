@@ -1,0 +1,461 @@
+Index: geos_c.cpp
+===================================================================
+--- geos_c.cpp	(revision 2610)
++++ geos_c.cpp	(working copy)
+@@ -16,6 +16,7 @@
+  ***********************************************************************/
+ 
+ #include <geos/geom/prep/PreparedGeometryFactory.h> 
++#include <geos/index/strtree/STRtree.h>
+ #include <geos/io/WKTReader.h>
+ #include <geos/io/WKBReader.h>
+ #include <geos/io/WKTWriter.h>
+@@ -29,6 +30,7 @@
+ #define GEOSGeometry geos::geom::Geometry
+ #define GEOSPreparedGeometry geos::geom::prep::PreparedGeometry
+ #define GEOSCoordSequence geos::geom::CoordinateSequence
++#define GEOSSTRtree geos::index::strtree::STRtree
+ #define GEOSWKTReader_t geos::io::WKTReader
+ #define GEOSWKTWriter_t geos::io::WKTWriter
+ #define GEOSWKBReader_t geos::io::WKBReader
+@@ -64,11 +66,12 @@
+ using geos::io::WKBWriter;
+ using geos::io::CLocalizer;
+ 
++using geos::index::strtree::STRtree;
++
+ using geos::operation::overlay::OverlayOp;
+ using geos::operation::overlay::overlayOp;
+ using geos::operation::geounion::CascadedPolygonUnion;
+ 
+-
+ typedef std::auto_ptr<Geometry> GeomAutoPtr;
+ 
+ //## GLOBALS ################################################
+@@ -835,4 +838,49 @@
+     return GEOSPreparedIntersects_r( handle, pg1, g2 );
+ }
+ 
++STRtree *
++GEOSSTRtree_create (size_t nodeCapacity)
++{
++    return GEOSSTRtree_create_r( handle, nodeCapacity );
++}
++
++void
++GEOSSTRtree_insert (geos::index::strtree::STRtree *tree,
++                    const geos::geom::Geometry *g,
++                    void *item)
++{
++    GEOSSTRtree_insert_r( handle, tree, g, item );
++}
++
++void
++GEOSSTRtree_query (geos::index::strtree::STRtree *tree,
++                   const geos::geom::Geometry *g, 
++                   GEOSQueryCallback cb,
++                   void *userdata)
++{
++    GEOSSTRtree_query_r( handle, tree, g, cb, userdata );
++}
++
++void 
++GEOSSTRtree_iterate(geos::index::strtree::STRtree *tree,
++                    GEOSQueryCallback callback,
++                    void *userdata)
++{
++    GEOSSTRtree_iterate_r( handle, tree, callback, userdata );
++}
++
++char
++GEOSSTRtree_remove (geos::index::strtree::STRtree *tree,
++                    const geos::geom::Geometry *g,
++                    void *item)
++{
++    return GEOSSTRtree_remove_r( handle, tree, g, item );
++}
++
++void
++GEOSSTRtree_destroy (geos::index::strtree::STRtree *tree)
++{
++    GEOSSTRtree_destroy_r( handle, tree );
++}
++
+ } /* extern "C" */
+Index: geos_ts_c.cpp
+===================================================================
+--- geos_ts_c.cpp	(revision 2610)
++++ geos_ts_c.cpp	(working copy)
+@@ -31,6 +31,9 @@
+ #include <geos/geom/GeometryFactory.h> 
+ #include <geos/geom/CoordinateSequenceFactory.h> 
+ #include <geos/geom/IntersectionMatrix.h> 
++#include <geos/geom/Envelope.h> 
++#include <geos/index/strtree/STRtree.h> 
++#include <geos/index/ItemVisitor.h>
+ #include <geos/io/WKTReader.h>
+ #include <geos/io/WKBReader.h>
+ #include <geos/io/WKTWriter.h>
+@@ -66,6 +69,7 @@
+ #define GEOSGeometry geos::geom::Geometry
+ #define GEOSPreparedGeometry geos::geom::prep::PreparedGeometry
+ #define GEOSCoordSequence geos::geom::CoordinateSequence
++#define GEOSSTRtree geos::index::strtree::STRtree
+ #define GEOSWKTReader_t geos::io::WKTReader
+ #define GEOSWKTWriter_t geos::io::WKTWriter
+ #define GEOSWKBReader_t geos::io::WKBReader
+@@ -4022,5 +4026,275 @@
+     return 2;
+ }
+ 
++//-----------------------------------------------------------------
++// STRtree
++//-----------------------------------------------------------------
++
++
++class CAPI_ItemVisitor : public geos::index::ItemVisitor {
++    GEOSQueryCallback callback;
++    void *userdata;
++  public:
++    CAPI_ItemVisitor (GEOSQueryCallback cb, void *ud)
++        : ItemVisitor(), callback(cb), userdata(ud) {};
++    void visitItem (void *item) { callback(item, userdata); };
++};
++
++geos::index::strtree::STRtree *
++GEOSSTRtree_create_r(GEOSContextHandle_t extHandle,
++                                  size_t nodeCapacity)
++{
++    if ( 0 == extHandle )
++    {
++        return 0;
++    }
++
++    GEOSContextHandleInternal_t *handle = 0;
++    handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++    if ( 0 == handle->initialized )
++    {
++        return 0;
++    }
++
++    geos::index::strtree::STRtree *tree = 0;
++
++    try
++    {
++        tree = new geos::index::strtree::STRtree(nodeCapacity);
++    }
++    catch (const std::exception &e)
++    {
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++    
++    return tree;
++}
++
++void
++GEOSSTRtree_insert_r(GEOSContextHandle_t extHandle,
++                     geos::index::strtree::STRtree *tree,
++                     const geos::geom::Geometry *g,
++                     void *item)
++{
++    GEOSContextHandleInternal_t *handle = 0;
++    assert(tree != 0);
++    assert(g != 0);
++
++    try
++    {
++        tree->insert(g->getEnvelopeInternal(), item);
++    }
++    catch (const std::exception &e)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++}
++
++void 
++GEOSSTRtree_query_r(GEOSContextHandle_t extHandle,
++                    geos::index::strtree::STRtree *tree,
++                    const geos::geom::Geometry *g,
++                    GEOSQueryCallback callback,
++                    void *userdata)
++{
++    GEOSContextHandleInternal_t *handle = 0;
++    assert(tree != 0);
++    assert(g != 0);
++    assert(callback != 0);
++
++    try
++    {
++        CAPI_ItemVisitor visitor(callback, userdata);
++        tree->query(g->getEnvelopeInternal(), visitor);
++    }
++    catch (const std::exception &e)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++}
++
++void 
++GEOSSTRtree_iterate_r(GEOSContextHandle_t extHandle,
++                    geos::index::strtree::STRtree *tree,
++                    GEOSQueryCallback callback,
++                    void *userdata)
++{
++    GEOSContextHandleInternal_t *handle = 0;
++    assert(tree != 0);
++    assert(callback != 0);
++
++    try
++    {
++        CAPI_ItemVisitor visitor(callback, userdata);
++        tree->iterate(visitor);
++    }
++    catch (const std::exception &e)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++}
++
++char
++GEOSSTRtree_remove_r(GEOSContextHandle_t extHandle,
++                     geos::index::strtree::STRtree *tree,
++                     const geos::geom::Geometry *g,
++                     void *item)
++{
++    assert(0 != tree);
++    assert(0 != g);
++
++    if ( 0 == extHandle )
++    {
++        return 2;
++    }
++
++    GEOSContextHandleInternal_t *handle = 0;
++    handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++    if ( 0 == handle->initialized )
++    {
++        return 2;
++    }
++
++    try 
++    {
++        bool result = tree->remove(g->getEnvelopeInternal(), item);
++        return result;
++    }
++    catch (const std::exception &e)
++    {
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++    
++    return 2;
++}
++
++void
++GEOSSTRtree_destroy_r(GEOSContextHandle_t extHandle,
++                      geos::index::strtree::STRtree *tree)
++{
++    GEOSContextHandleInternal_t *handle = 0;
++
++    try
++    {
++        delete tree;
++    }
++    catch (const std::exception &e)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("%s", e.what());
++    }
++    catch (...)
++    {
++        if ( 0 == extHandle )
++        {
++            return;
++        }
++
++        handle = reinterpret_cast<GEOSContextHandleInternal_t*>(extHandle);
++        if ( 0 == handle->initialized )
++        {
++            return;
++        }
++
++        handle->ERROR_MESSAGE("Unknown exception thrown");
++    }
++}
++
+ } /* extern "C" */
+ 
+Index: geos_c.h.in
+===================================================================
+--- geos_c.h.in	(revision 2610)
++++ geos_c.h.in	(working copy)
+@@ -100,6 +100,7 @@
+ typedef struct GEOSGeom_t GEOSGeometry;
+ typedef struct GEOSPrepGeom_t GEOSPreparedGeometry;
+ typedef struct GEOSCoordSeq_t GEOSCoordSequence;
++typedef struct GEOSSTRtree_t GEOSSTRtree;
+ #endif
+ 
+ /* Those are compatibility definitions for source compatibility
+@@ -132,6 +133,8 @@
+ 
+ typedef struct GEOSContextHandle_HS *GEOSContextHandle_t;
+ 
++typedef void (*GEOSQueryCallback)(void *item, void *userdata);
++
+ /************************************************************************
+  *
+  * Initialization, cleanup, version
+@@ -576,6 +579,57 @@
+ 
+ /************************************************************************
+  *
++ *  STRtree functions
++ *
++ ***********************************************************************/
++
++/* 
++ * GEOSGeometry ownership is retained by caller
++ */
++
++extern GEOSSTRtree GEOS_DLL *GEOSSTRtree_create(size_t nodeCapacity);
++extern void GEOS_DLL GEOSSTRtree_insert(GEOSSTRtree *tree,
++                                        const GEOSGeometry *g,
++                                        void *item);
++extern void GEOS_DLL GEOSSTRtree_query(GEOSSTRtree *tree,
++                                       const GEOSGeometry *g,
++                                       GEOSQueryCallback callback,
++                                       void *userdata);
++extern void GEOS_DLL GEOSSTRtree_iterate(GEOSSTRtree *tree,
++                                       GEOSQueryCallback callback,
++                                       void *userdata);
++extern char GEOS_DLL GEOSSTRtree_remove(GEOSSTRtree *tree,
++                                        const GEOSGeometry *g,
++                                        void *item);
++extern void GEOS_DLL GEOSSTRtree_destroy(GEOSSTRtree *tree);
++
++
++extern GEOSSTRtree GEOS_DLL *GEOSSTRtree_create_r(
++                                    GEOSContextHandle_t handle,
++                                    size_t nodeCapacity);
++extern void GEOS_DLL GEOSSTRtree_insert_r(GEOSContextHandle_t handle,
++                                          GEOSSTRtree *tree,
++                                          const GEOSGeometry *g,
++                                          void *item);
++extern void GEOS_DLL GEOSSTRtree_query_r(GEOSContextHandle_t handle,
++                                         GEOSSTRtree *tree,
++                                         const GEOSGeometry *g,
++                                         GEOSQueryCallback callback,
++                                         void *userdata);
++extern void GEOS_DLL GEOSSTRtree_iterate_r(GEOSContextHandle_t handle,
++                                       GEOSSTRtree *tree,
++                                       GEOSQueryCallback callback,
++                                       void *userdata);
++extern char GEOS_DLL GEOSSTRtree_remove_r(GEOSContextHandle_t handle,
++                                          GEOSSTRtree *tree,
++                                          const GEOSGeometry *g,
++                                          void *item);
++extern void GEOS_DLL GEOSSTRtree_destroy_r(GEOSContextHandle_t handle,
++                                           GEOSSTRtree *tree);
++
++
++/************************************************************************
++ *
+  *  Unary predicate - return 2 on exception, 1 on true, 0 on false
+  *
+  ***********************************************************************/
