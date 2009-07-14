@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>load_index (test.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File test.rb, line 19</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">load_index</span> (<span class="ruby-identifier">file</span>, <span class="ruby-identifier">idfield</span>)
+  <span class="ruby-identifier">index</span> = <span class="ruby-constant">Geojoin</span><span class="ruby-operator">::</span><span class="ruby-constant">Index</span>.<span class="ruby-identifier">new</span>()
+  <span class="ruby-constant">GeoRuby</span><span class="ruby-operator">::</span><span class="ruby-constant">Shp4r</span><span class="ruby-operator">::</span><span class="ruby-constant">ShpFile</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">record</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">wkb</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">geometry</span>.<span class="ruby-identifier">as_wkb</span>
+    <span class="ruby-identifier">id</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">data</span>[<span class="ruby-identifier">idfield</span>]
+    <span class="ruby-identifier">index</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Geojoin</span><span class="ruby-operator">::</span><span class="ruby-constant">Feature</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">wkb</span>, <span class="ruby-identifier">id</span>)
+  <span class="ruby-keyword kw">end</span>
+  <span class="ruby-identifier">index</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
