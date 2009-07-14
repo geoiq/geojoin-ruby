@@ -1,7 +1,7 @@
-Index: geos_c.cpp
+Index: capi/geos_c.cpp
 ===================================================================
---- geos_c.cpp	(revision 2610)
-+++ geos_c.cpp	(working copy)
+--- capi/geos_c.cpp	(revision 2610)
++++ capi/geos_c.cpp	(working copy)
 @@ -16,6 +16,7 @@
   ***********************************************************************/
  
@@ -82,10 +82,10 @@ Index: geos_c.cpp
 +}
 +
  } /* extern "C" */
-Index: geos_ts_c.cpp
+Index: capi/geos_ts_c.cpp
 ===================================================================
---- geos_ts_c.cpp	(revision 2610)
-+++ geos_ts_c.cpp	(working copy)
+--- capi/geos_ts_c.cpp	(revision 2610)
++++ capi/geos_ts_c.cpp	(working copy)
 @@ -31,6 +31,9 @@
  #include <geos/geom/GeometryFactory.h> 
  #include <geos/geom/CoordinateSequenceFactory.h> 
@@ -380,10 +380,10 @@ Index: geos_ts_c.cpp
 +
  } /* extern "C" */
  
-Index: geos_c.h.in
+Index: capi/geos_c.h.in
 ===================================================================
---- geos_c.h.in	(revision 2610)
-+++ geos_c.h.in	(working copy)
+--- capi/geos_c.h.in	(revision 2610)
++++ capi/geos_c.h.in	(working copy)
 @@ -100,6 +100,7 @@
  typedef struct GEOSGeom_t GEOSGeometry;
  typedef struct GEOSPrepGeom_t GEOSPreparedGeometry;

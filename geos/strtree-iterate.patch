@@ -1,7 +1,7 @@
-Index: index/strtree/AbstractSTRtree.cpp
+Index: source/index/strtree/AbstractSTRtree.cpp
 ===================================================================
---- index/strtree/AbstractSTRtree.cpp	(revision 2610)
-+++ index/strtree/AbstractSTRtree.cpp	(working copy)
+--- source/index/strtree/AbstractSTRtree.cpp	(revision 2610)
++++ source/index/strtree/AbstractSTRtree.cpp	(working copy)
 @@ -288,6 +288,20 @@
  	}
  }
@@ -23,10 +23,10 @@ Index: index/strtree/AbstractSTRtree.cpp
  /*protected*/
  std::auto_ptr<BoundableList>
  AbstractSTRtree::boundablesAtLevel(int level)
-Index: headers/geos/index/strtree/AbstractSTRtree.h
+Index: source/headers/geos/index/strtree/AbstractSTRtree.h
 ===================================================================
---- headers/geos/index/strtree/AbstractSTRtree.h	(revision 2610)
-+++ headers/geos/index/strtree/AbstractSTRtree.h	(working copy)
+--- source/headers/geos/index/strtree/AbstractSTRtree.h	(revision 2610)
++++ source/headers/geos/index/strtree/AbstractSTRtree.h	(working copy)
 @@ -202,6 +202,7 @@
  	}
  

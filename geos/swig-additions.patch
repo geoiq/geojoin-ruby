@@ -1,7 +1,7 @@
-Index: ruby/ruby.i
+Index: swig/ruby/ruby.i
 ===================================================================
---- ruby/ruby.i	(revision 2610)
-+++ ruby/ruby.i	(working copy)
+--- swig/ruby/ruby.i	(revision 2610)
++++ swig/ruby/ruby.i	(working copy)
 @@ -104,3 +104,73 @@
      free((void*) $1);
    }
@@ -76,10 +76,10 @@ Index: ruby/ruby.i
 +
 +%markfunc GeosSTRtree "mark_GeosSTRtree";
 +
-Index: geos.i.in
+Index: swig/geos.i.in
 ===================================================================
---- geos.i.in	(revision 2610)
-+++ geos.i.in	(working copy)
+--- swig/geos.i.in	(revision 2610)
++++ swig/geos.i.in	(working copy)
 @@ -950,6 +950,126 @@
  
  %clear GeosCoordinateSequence *s;
