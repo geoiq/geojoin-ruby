@@ -57,7 +57,10 @@ module Geojoin
     # calling validate! if you plan to do spatial computations with the
     # geometry inside an Index query.
     def validate!
-      @geometry = @geometry.buffer(0) unless @geometry.valid?
+      unless @geometry.valid?
+        @geometry = @geometry.buffer(0)
+        @centroid = @prepared = nil
+      end
     end
 
     # True if the feature's geometry has been prepared and
