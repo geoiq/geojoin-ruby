@@ -7,6 +7,9 @@
 
 = Patch and build GEOS
 
+This section will be revised when the patches submitted
+to the GEOS project are added to SVN.
+
   svn checkout http://svn.osgeo.org/geos/trunk geos-svn
   cd geos-svn
   patch -p0 <../geos.diff
@@ -22,4 +25,8 @@
   ruby test.rb
   gem build geojoin.gemspec
   gem install Geojoin-1.0.0.gem
+
+= Alternately: Build the HTML docs without installing Geojoin
+
+  rdoc geojoin.rb
 
