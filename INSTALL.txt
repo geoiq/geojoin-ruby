@@ -1,0 +1,25 @@
+= Prerequisites
+
+* Ruby development files
+* SWIG
+* g++
+* GeoRuby gem (for testing)
+
+= Patch and build GEOS
+
+  svn checkout http://svn.osgeo.org/geos/trunk geos-svn
+  cd geos-svn
+  patch -p0 <../geos.diff
+  ./autogen.sh
+  ./configure --enable-ruby
+  make
+  make install
+
+= Build and install Geojoin
+
+  cd ..
+  gem install GeoRuby
+  ruby test.rb
+  gem build geojoin.gemspec
+  gem install Geojoin-1.0.0.gem
+
