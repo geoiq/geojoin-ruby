@@ -150,6 +150,7 @@ module Geojoin
   # argument. The containment-testing query method presume that the query
   # feature is a (multi)polygon.
   class Index
+    attr_accessor :built
     private
 
     def type_check (feature)
@@ -158,9 +159,9 @@ module Geojoin
     end
 
     def polygon_check (feature)
-      # TODO: finish implementing this
       raise "this method may only be called with a Geojoin::Feature " \
-        + "containing a (multi)polygon geometry." unless true
+        + "containing a (multi)polygon geometry." unless \
+        [Geos::Polygon, Geos::MultiPolygon].member? feature.geometry.class
     end
 
     # only call as a prelude to @tree.query
