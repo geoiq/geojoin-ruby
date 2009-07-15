@@ -5,16 +5,16 @@
 
 <html>
 <head>
-  <title>new (Geojoin::Index)</title>
+  <title>mean (Geojoin::Index)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 175</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span> (<span class="ruby-identifier">features</span>=[])
-      <span class="ruby-ivar">@tree</span>   = <span class="ruby-constant">Geos</span><span class="ruby-operator">::</span><span class="ruby-constant">STRtree</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">10</span>) <span class="ruby-comment cmt"># max 10 features per tree node</span>
-      <span class="ruby-ivar">@built</span>  = <span class="ruby-keyword kw">false</span>
-      <span class="ruby-identifier">push</span> <span class="ruby-operator">*</span><span class="ruby-identifier">features</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 288</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">mean</span> (<span class="ruby-identifier">feature</span>, <span class="ruby-identifier">key</span>)
+      <span class="ruby-identifier">items</span> = <span class="ruby-identifier">total</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">contained_by</span>(<span class="ruby-identifier">feature</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">other</span><span class="ruby-operator">|</span> <span class="ruby-identifier">items</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>; <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>]}
+      <span class="ruby-identifier">items</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">total</span>.<span class="ruby-identifier">to_f</span>
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

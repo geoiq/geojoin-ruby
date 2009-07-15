@@ -106,19 +106,19 @@ feature is a (multi)polygon.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000011">&lt;&lt;</a>&nbsp;&nbsp;
-      <a href="#M000014">contained_by</a>&nbsp;&nbsp;
-      <a href="#M000017">count</a>&nbsp;&nbsp;
-      <a href="#M000013">each</a>&nbsp;&nbsp;
-      <a href="#M000015">intersects_with</a>&nbsp;&nbsp;
-      <a href="#M000022">max</a>&nbsp;&nbsp;
-      <a href="#M000019">mean</a>&nbsp;&nbsp;
-      <a href="#M000021">min</a>&nbsp;&nbsp;
-      <a href="#M000010">new</a>&nbsp;&nbsp;
-      <a href="#M000012">push</a>&nbsp;&nbsp;
-      <a href="#M000016">relates_to</a>&nbsp;&nbsp;
-      <a href="#M000020">stddev</a>&nbsp;&nbsp;
-      <a href="#M000018">sum</a>&nbsp;&nbsp;
+      <a href="#M000002">&lt;&lt;</a>&nbsp;&nbsp;
+      <a href="#M000005">contained_by</a>&nbsp;&nbsp;
+      <a href="#M000008">count</a>&nbsp;&nbsp;
+      <a href="#M000004">each</a>&nbsp;&nbsp;
+      <a href="#M000006">intersects_with</a>&nbsp;&nbsp;
+      <a href="#M000013">max</a>&nbsp;&nbsp;
+      <a href="#M000010">mean</a>&nbsp;&nbsp;
+      <a href="#M000012">min</a>&nbsp;&nbsp;
+      <a href="#M000001">new</a>&nbsp;&nbsp;
+      <a href="#M000003">push</a>&nbsp;&nbsp;
+      <a href="#M000007">relates_to</a>&nbsp;&nbsp;
+      <a href="#M000011">stddev</a>&nbsp;&nbsp;
+      <a href="#M000009">sum</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -133,6 +133,19 @@ feature is a (multi)polygon.
 
 
 
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">built</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
       
 
 
@@ -140,19 +153,19 @@ feature is a (multi)polygon.
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000010" class="method-detail">
-        <a name="M000010"></a>
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000010.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000010.html');return false;">
+          <a href="Index.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000001.html');return false;">
           <span class="method-name">new</span><span class="method-args">(features=[])</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-The <a href="Index.html#M000010">new</a>() method takes an optional Array
+The <a href="Index.html#M000001">new</a>() method takes an optional Array
 of features.
 </p>
         </div>
@@ -160,12 +173,12 @@ of features.
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000011" class="method-detail">
-        <a name="M000011"></a>
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000011.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000011.html');return false;">
+          <a href="Index.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000002.html');return false;">
           <span class="method-name">&lt;&lt;</span><span class="method-args">(feature)</span>
           </a>
         </div>
@@ -175,18 +188,18 @@ of features.
 Add a feature to the index. The &lt;&lt; method takes either a <a
 href="Feature.html">Feature</a> object or a two-element Array as its sole
 argument. If an Array is provided, its contents are used as the arguments
-to <a href="Feature.html#M000001">Feature.new</a>(), and then the <a
-href="Index.html#M000010">new</a> feature is inserted into the index.
+to <a href="Feature.html#M000014">Feature.new</a>(), and then the <a
+href="Index.html#M000001">new</a> feature is inserted into the index.
 </p>
         </div>
       </div>
 
-      <div id="method-M000014" class="method-detail">
-        <a name="M000014"></a>
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000014.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000014.html');return false;">
+          <a href="Index.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000005.html');return false;">
           <span class="method-name">contained_by</span><span class="method-args">(feature) {|match if contained| ...}</span>
           </a>
         </div>
@@ -195,7 +208,7 @@ href="Index.html#M000010">new</a> feature is inserted into the index.
           <p>
 Given a query feature, iterates over all features in the index that are
 contained by the query feature, and yields <a
-href="Index.html#M000013">each</a> to the given block. Presumes that the
+href="Index.html#M000004">each</a> to the given block. Presumes that the
 query feature is a (multi)polygon.
 </p>
 <p>
@@ -222,20 +235,61 @@ Calling this method causes the index to become read-only.
         </div>
       </div>
 
-      <div id="method-M000017" class="method-detail">
-        <a name="M000017"></a>
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000017.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000017.html');return false;">
+          <a href="Index.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000008.html');return false;">
           <span class="method-name">count</span><span class="method-args">(feature)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Returns a <a href="Index.html#M000017">count</a> of all features in the
+Returns a <a href="Index.html#M000008">count</a> of all features in the
 index contained by the given query feature.
+</p>
+<p>
+Calling this method causes the index to become read only.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="Index.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000004.html');return false;">
+          <span class="method-name">each</span><span class="method-args">() {|feature| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Iterates over the index, passing <a href="Index.html#M000004">each</a>
+feature to the given block. The <a href="Index.html#M000004">each</a>()
+method does <b>not</b> trigger the construction of the index.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="Index.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000006.html');return false;">
+          <span class="method-name">intersects_with</span><span class="method-args">(feature) {|match if intersects| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Given a query feature, iterates over all features in the index that
+intersect with the query feature, and yields <a
+href="Index.html#M000004">each</a> to the given block.
 </p>
 <p>
 Calling this method causes the index to become read only.
@@ -249,47 +303,6 @@ Calling this method causes the index to become read only.
         <div class="method-heading">
           <a href="Index.src/M000013.html" target="Code" class="method-signature"
             onclick="popupCode('Index.src/M000013.html');return false;">
-          <span class="method-name">each</span><span class="method-args">() {|feature| ...}</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Iterates over the index, passing <a href="Index.html#M000013">each</a>
-feature to the given block. The <a href="Index.html#M000013">each</a>()
-method does <b>not</b> trigger the construction of the index.
-</p>
-        </div>
-      </div>
-
-      <div id="method-M000015" class="method-detail">
-        <a name="M000015"></a>
-
-        <div class="method-heading">
-          <a href="Index.src/M000015.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000015.html');return false;">
-          <span class="method-name">intersects_with</span><span class="method-args">(feature) {|match if intersects| ...}</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Given a query feature, iterates over all features in the index that
-intersect with the query feature, and yields <a
-href="Index.html#M000013">each</a> to the given block.
-</p>
-<p>
-Calling this method causes the index to become read only.
-</p>
-        </div>
-      </div>
-
-      <div id="method-M000022" class="method-detail">
-        <a name="M000022"></a>
-
-        <div class="method-heading">
-          <a href="Index.src/M000022.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000022.html');return false;">
           <span class="method-name">max</span><span class="method-args">(feature, key)</span>
           </a>
         </div>
@@ -297,7 +310,7 @@ Calling this method causes the index to become read only.
         <div class="method-description">
           <p>
 Returns the maximum value across all features in the index contained by the
-given query feature. The value of <a href="Index.html#M000013">each</a>
+given query feature. The value of <a href="Index.html#M000004">each</a>
 feature is obtained by looking up the provided key in the indexed
 feature&#8216;s data object.
 </p>
@@ -307,45 +320,22 @@ Calling this method causes the index to become read only.
         </div>
       </div>
 
-      <div id="method-M000019" class="method-detail">
-        <a name="M000019"></a>
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000019.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000019.html');return false;">
+          <a href="Index.src/M000010.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000010.html');return false;">
           <span class="method-name">mean</span><span class="method-args">(feature, key)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Returns the <a href="Index.html#M000019">mean</a> value across all features
+Returns the <a href="Index.html#M000010">mean</a> value across all features
 in the index contained by the given query feature. The value of <a
-href="Index.html#M000013">each</a> feature is obtained by looking up the
+href="Index.html#M000004">each</a> feature is obtained by looking up the
 provided key in the indexed feature&#8216;s data object.
-</p>
-<p>
-Calling this method causes the index to become read only.
-</p>
-        </div>
-      </div>
-
-      <div id="method-M000021" class="method-detail">
-        <a name="M000021"></a>
-
-        <div class="method-heading">
-          <a href="Index.src/M000021.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000021.html');return false;">
-          <span class="method-name">min</span><span class="method-args">(feature, key)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Returns the minimum value across all features in the index contained by the
-given query feature. The value of <a href="Index.html#M000013">each</a>
-feature is obtained by looking up the provided key in the indexed
-feature&#8216;s data object.
 </p>
 <p>
 Calling this method causes the index to become read only.
@@ -359,6 +349,29 @@ Calling this method causes the index to become read only.
         <div class="method-heading">
           <a href="Index.src/M000012.html" target="Code" class="method-signature"
             onclick="popupCode('Index.src/M000012.html');return false;">
+          <span class="method-name">min</span><span class="method-args">(feature, key)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns the minimum value across all features in the index contained by the
+given query feature. The value of <a href="Index.html#M000004">each</a>
+feature is obtained by looking up the provided key in the indexed
+feature&#8216;s data object.
+</p>
+<p>
+Calling this method causes the index to become read only.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="Index.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000003.html');return false;">
           <span class="method-name">push</span><span class="method-args">(*features)</span>
           </a>
         </div>
@@ -370,12 +383,12 @@ Adds one or more features to the index.
         </div>
       </div>
 
-      <div id="method-M000016" class="method-detail">
-        <a name="M000016"></a>
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000016.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000016.html');return false;">
+          <a href="Index.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000007.html');return false;">
           <span class="method-name">relates_to</span><span class="method-args">(feature) {|[match, Relation.new(feature, match)]| ...}</span>
           </a>
         </div>
@@ -393,12 +406,12 @@ Calling this method causes the index to become read only.
         </div>
       </div>
 
-      <div id="method-M000020" class="method-detail">
-        <a name="M000020"></a>
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000020.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000020.html');return false;">
+          <a href="Index.src/M000011.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000011.html');return false;">
           <span class="method-name">stddev</span><span class="method-args">(feature, key)</span>
           </a>
         </div>
@@ -407,7 +420,7 @@ Calling this method causes the index to become read only.
           <p>
 Returns the population standard deviation across all features in the index
 contained by the given query feature. The value of <a
-href="Index.html#M000013">each</a> feature is obtained by looking up the
+href="Index.html#M000004">each</a> feature is obtained by looking up the
 provided key in the indexed feature&#8216;s data object.
 </p>
 <p>
@@ -416,21 +429,21 @@ Calling this method causes the index to become read only.
         </div>
       </div>
 
-      <div id="method-M000018" class="method-detail">
-        <a name="M000018"></a>
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
 
         <div class="method-heading">
-          <a href="Index.src/M000018.html" target="Code" class="method-signature"
-            onclick="popupCode('Index.src/M000018.html');return false;">
+          <a href="Index.src/M000009.html" target="Code" class="method-signature"
+            onclick="popupCode('Index.src/M000009.html');return false;">
           <span class="method-name">sum</span><span class="method-args">(feature, key)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Returns the <a href="Index.html#M000018">sum</a> of a value across all
+Returns the <a href="Index.html#M000009">sum</a> of a value across all
 features in the index contained by the given query feature. The value of <a
-href="Index.html#M000013">each</a> feature is obtained by looking up the
+href="Index.html#M000004">each</a> feature is obtained by looking up the
 provided key in the indexed feature&#8216;s data object.
 </p>
 <p>

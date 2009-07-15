@@ -5,17 +5,21 @@
 
 <html>
 <head>
-  <title>&lt;&lt; (Geojoin::Index)</title>
+  <title>stddev (Geojoin::Index)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 185</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-operator">&lt;&lt;</span> (<span class="ruby-identifier">feature</span>)
-      <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;index has been built and is now read-only&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@built</span>
-      <span class="ruby-identifier">feature</span> = <span class="ruby-constant">Feature</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">feature</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">feature</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Array</span>
-      <span class="ruby-identifier">type_check</span> <span class="ruby-identifier">feature</span>
-      <span class="ruby-ivar">@tree</span>.<span class="ruby-identifier">insert</span> <span class="ruby-identifier">feature</span>.<span class="ruby-identifier">geometry</span>, <span class="ruby-identifier">feature</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 300</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stddev</span> (<span class="ruby-identifier">feature</span>, <span class="ruby-identifier">key</span>)
+      <span class="ruby-identifier">items</span> = <span class="ruby-identifier">mean</span> = <span class="ruby-identifier">m2</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">contained_by</span>(<span class="ruby-identifier">feature</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">other</span><span class="ruby-operator">|</span> 
+        <span class="ruby-identifier">n</span> = <span class="ruby-identifier">n</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
+        <span class="ruby-identifier">delta</span> = <span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">-</span> <span class="ruby-identifier">mean</span>
+        <span class="ruby-identifier">mean</span> = <span class="ruby-identifier">mean</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">delta</span><span class="ruby-operator">/</span><span class="ruby-identifier">n</span>.<span class="ruby-identifier">to_f</span>
+        <span class="ruby-identifier">m2</span> = <span class="ruby-identifier">m2</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">delta</span><span class="ruby-operator">*</span>(<span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">-</span> <span class="ruby-identifier">mean</span>)
+      }
+      <span class="ruby-constant">Math</span>.<span class="ruby-identifier">sqrt</span>(<span class="ruby-identifier">m2</span><span class="ruby-operator">/</span><span class="ruby-identifier">n</span>.<span class="ruby-identifier">to_f</span>)
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
