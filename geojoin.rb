@@ -149,7 +149,7 @@ module Geojoin
     def initialize (features=[])
       @tree   = Geos::STRtree.new(10) # max 10 features per tree node
       @built  = false
-      features.each {|f| self << f}
+      push *features
     end
 
     # Add a feature to the index. The << method takes either a
@@ -161,6 +161,11 @@ module Geojoin
       feature = Feature.new(*feature) if feature.kind_of? Array
       type_check feature
       @tree.insert feature.geometry, feature
+    end
+
+    # Adds one or more features to the index.
+    def push (*features)
+      features.each {|f| self << f}
     end
 
     # Iterates over the index, passing each feature to the given block.
