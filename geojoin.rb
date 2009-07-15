@@ -22,10 +22,10 @@ module Geojoin
     def initialize (geometry, data)
       if geometry.kind_of? Geos::Geometry
         @geometry = geometry.clone
-      elsif geometry.match /^[0-9a-f]$/io
+      elsif geometry =~ /^[0-9a-f]$/io
         # WKB in hex format
         @geometry = wkb_in.readHEX geometry
-      elsif ('A'..'Z').member? geometry[0]
+      elsif geometry =~ /^[A-Z]/o
         # WKT
         @geometry = wkt_in.read geometry
       else
@@ -47,7 +47,7 @@ module Geojoin
       @@wkt_in
     end
 
-    protected
+    public
 
     # Return the (possibly cached) centroid of the feature's geometry.
     def centroid
@@ -137,13 +137,19 @@ module Geojoin
         + "containing a (multi)polygon geometry." unless true
     end
 
+    # only call as a prelude to @tree.query
+    def built_tree
+      @built = true unless @built
+      @tree
+    end
+
     public
 
     # The new() method takes an optional Array of features.
     def initialize (features=[])
-      capacity = features.any? ? features.length : 10
-      @tree   = Geos::STRtree.new(capacity)
-      features.each {|f| self << f}
+      @tree   = Geos::STRtree.new(10) # max 10 features per tree node
+      @built  = false
+      push *features
     end
 
     # Add a feature to the index. The << method takes either a
@@ -151,10 +157,15 @@ module Geojoin
     # Array is provided, its contents are used as the arguments to
     # Feature.new(), and then the new feature is inserted into the index.
     def << (feature)
-      # TODO: raise an error if the index is already built
+      raise "index has been built and is now read-only" if @built
       feature = Feature.new(*feature) if feature.kind_of? Array
       type_check feature
       @tree.insert feature.geometry, feature
+    end
+
+    # Adds one or more features to the index.
+    def push (*features)
+      features.each {|f| self << f}
     end
 
     # Iterates over the index, passing each feature to the given block.
@@ -185,7 +196,7 @@ module Geojoin
       type_check feature
       polygon_check feature
       prepared = Geos::Prepared.new(feature.geometry)
-      @tree.query(feature.geometry) {|match|
+      built_tree.query(feature.geometry) {|match|
         if match.contains_centroid?
           contained = prepared.contains_properly? match.centroid
         else
@@ -207,7 +218,7 @@ module Geojoin
     def intersects_with (feature)
       type_check feature
       prepared = Geos::Prepared.new(feature.geometry)
-      @tree.query(feature.geometry) {|match|
+      built_tree.query(feature.geometry) {|match|
         yield match if prepared.intersects? match.geometry
       }
     end
@@ -220,7 +231,7 @@ module Geojoin
     # Calling this method causes the index to become read only.
     def relates_to (feature)
       type_check feature
-      @tree.query(feature.geometry) {|match|
+      built_tree.query(feature.geometry) {|match|
         yield [match, Relation.new(feature, match)]
       }
     end
