@@ -8,8 +8,8 @@ module Geojoin
   class Feature
     @@wkb_in = nil
     @@wkt_in = nil
-    attr_accessor :geometry
-    attr_accessor :data
+    attr_reader :geometry
+    attr_reader :data
 
     # The geometry object can be either a Geos::Geometry or a string. If it is
     # a string, it must be a geometry in either WKT, WKB, or "WKB hex" format,
@@ -107,7 +107,7 @@ module Geojoin
   # * contains?
   # * intersects?
   class Relation
-    attr_accessor :matrix
+    attr_reader :matrix
     # The new() method takes two Feature objects as its arguments.
     def initialize (feat1, feat2)
       @matrix = feat1.geometry.relate(feat2.geometry)
@@ -153,7 +153,7 @@ module Geojoin
   # argument. The containment-testing query method presume that the query
   # feature is a (multi)polygon.
   class Index
-    attr_accessor :built
+    attr_reader :built
     private
 
     def type_check (feature)
