@@ -5,28 +5,16 @@
 
 <html>
 <head>
-  <title>contained_by (Geojoin::Index)</title>
+  <title>new (Geojoin::Index)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 184</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">contained_by</span> (<span class="ruby-identifier">feature</span>)
-      <span class="ruby-identifier">type_check</span> <span class="ruby-identifier">feature</span>
-      <span class="ruby-identifier">polygon_check</span> <span class="ruby-identifier">feature</span>
-      <span class="ruby-identifier">prepared</span> = <span class="ruby-constant">Geos</span><span class="ruby-operator">::</span><span class="ruby-constant">Prepared</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">feature</span>.<span class="ruby-identifier">geometry</span>)
-      <span class="ruby-ivar">@tree</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">feature</span>.<span class="ruby-identifier">geometry</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">match</span><span class="ruby-operator">|</span>
-        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">contains_centroid?</span>
-          <span class="ruby-identifier">contained</span> = <span class="ruby-identifier">prepared</span>.<span class="ruby-identifier">contains_properly?</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">centroid</span>
-        <span class="ruby-keyword kw">else</span>
-          <span class="ruby-identifier">contained</span> = <span class="ruby-identifier">prepared</span>.<span class="ruby-identifier">contains_properly?</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">geometry</span>
-          <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">contained</span>
-            <span class="ruby-identifier">contained</span> = <span class="ruby-identifier">prepared</span>.<span class="ruby-identifier">contains_properly?</span>(<span class="ruby-identifier">match</span>.<span class="ruby-identifier">centroid</span>) \
-                    <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">prepared</span>.<span class="ruby-identifier">intersects?</span>(<span class="ruby-identifier">match</span>.<span class="ruby-identifier">geometry</span>)
-          <span class="ruby-keyword kw">end</span>
-        <span class="ruby-keyword kw">end</span>
-        <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">match</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">contained</span>
-      }
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 175</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span> (<span class="ruby-identifier">features</span>=[])
+      <span class="ruby-ivar">@tree</span>   = <span class="ruby-constant">Geos</span><span class="ruby-operator">::</span><span class="ruby-constant">STRtree</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">10</span>) <span class="ruby-comment cmt"># max 10 features per tree node</span>
+      <span class="ruby-ivar">@built</span>  = <span class="ruby-keyword kw">false</span>
+      <span class="ruby-identifier">push</span> <span class="ruby-operator">*</span><span class="ruby-identifier">features</span>
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

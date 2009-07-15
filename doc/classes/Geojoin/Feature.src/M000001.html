@@ -10,14 +10,14 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 22</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 20</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span> (<span class="ruby-identifier">geometry</span>, <span class="ruby-identifier">data</span>)
       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">geometry</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Geos</span><span class="ruby-operator">::</span><span class="ruby-constant">Geometry</span>
         <span class="ruby-ivar">@geometry</span> = <span class="ruby-identifier">geometry</span>.<span class="ruby-identifier">clone</span>
-      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">geometry</span>.<span class="ruby-identifier">match</span> <span class="ruby-regexp re">/^[0-9a-f]$/i</span><span class="ruby-identifier">o</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">geometry</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/\A[0-9a-f]\Z/i</span><span class="ruby-identifier">o</span>
         <span class="ruby-comment cmt"># WKB in hex format</span>
         <span class="ruby-ivar">@geometry</span> = <span class="ruby-identifier">wkb_in</span>.<span class="ruby-identifier">readHEX</span> <span class="ruby-identifier">geometry</span>
-      <span class="ruby-keyword kw">elsif</span> (<span class="ruby-value str">'A'</span><span class="ruby-operator">..</span><span class="ruby-value str">'Z'</span>).<span class="ruby-identifier">member?</span> <span class="ruby-identifier">geometry</span>[<span class="ruby-value">0</span>]
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">geometry</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/\A[A-Z]/o</span>
         <span class="ruby-comment cmt"># WKT</span>
         <span class="ruby-ivar">@geometry</span> = <span class="ruby-identifier">wkt_in</span>.<span class="ruby-identifier">read</span> <span class="ruby-identifier">geometry</span>
       <span class="ruby-keyword kw">else</span>

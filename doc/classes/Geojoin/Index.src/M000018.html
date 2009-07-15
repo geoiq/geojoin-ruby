@@ -5,18 +5,16 @@
 
 <html>
 <head>
-  <title>max (Geojoin::Index)</title>
+  <title>sum (Geojoin::Index)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 295</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">max</span> (<span class="ruby-identifier">feature</span>, <span class="ruby-identifier">key</span>)
-      <span class="ruby-identifier">value</span> = <span class="ruby-keyword kw">nil</span>
-      <span class="ruby-identifier">contained_by</span>(<span class="ruby-identifier">feature</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">other</span><span class="ruby-operator">|</span>
-        <span class="ruby-identifier">value</span> = <span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword kw">or</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>]
-      }
-      <span class="ruby-identifier">value</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 273</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sum</span> (<span class="ruby-identifier">feature</span>, <span class="ruby-identifier">key</span>)
+      <span class="ruby-identifier">total</span> = <span class="ruby-value">0</span>
+      <span class="ruby-identifier">contained_by</span>(<span class="ruby-identifier">feature</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">other</span><span class="ruby-operator">|</span> <span class="ruby-identifier">total</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">other</span>[<span class="ruby-identifier">key</span>]}
+      <span class="ruby-identifier">total</span>
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

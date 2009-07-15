@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 51</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 89</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">centroid</span>
-      <span class="ruby-identifier">contains_centroid?</span> <span class="ruby-comment cmt"># make sure the centroid is calculated</span>
+      <span class="ruby-ivar">@centroid</span> = <span class="ruby-ivar">@geometry</span>.<span class="ruby-identifier">centroid</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@centroid</span>
       <span class="ruby-ivar">@centroid</span>
     <span class="ruby-keyword kw">end</span></pre>
 </body>

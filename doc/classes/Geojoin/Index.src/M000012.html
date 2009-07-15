@@ -5,17 +5,14 @@
 
 <html>
 <head>
-  <title>relates_to (Geojoin::Index)</title>
+  <title>push (Geojoin::Index)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 221</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">relates_to</span> (<span class="ruby-identifier">feature</span>)
-      <span class="ruby-identifier">type_check</span> <span class="ruby-identifier">feature</span>
-      <span class="ruby-ivar">@tree</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">feature</span>.<span class="ruby-identifier">geometry</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">match</span><span class="ruby-operator">|</span>
-        <span class="ruby-keyword kw">yield</span> [<span class="ruby-identifier">match</span>, <span class="ruby-constant">Relation</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">feature</span>, <span class="ruby-identifier">match</span>)]
-      }
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 193</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">push</span> (<span class="ruby-operator">*</span><span class="ruby-identifier">features</span>)
+      <span class="ruby-identifier">features</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">f</span>}
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

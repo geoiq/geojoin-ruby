@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 108</span>
+  <pre><span class="ruby-comment cmt"># File geojoin.rb, line 134</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">predicates</span>
-      (<span class="ruby-ivar">@@predicates</span>.<span class="ruby-identifier">keys</span> <span class="ruby-operator">+</span> [<span class="ruby-value str">&quot;intersect&quot;</span>]).<span class="ruby-identifier">map</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">pred</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;#{pred}?&quot;</span>.<span class="ruby-identifier">to_sym</span>}
+      (<span class="ruby-ivar">@@predicates</span>.<span class="ruby-identifier">keys</span> <span class="ruby-operator">+</span> [<span class="ruby-value str">&quot;intersects&quot;</span>]).<span class="ruby-identifier">map</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">pred</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;#{pred}?&quot;</span>.<span class="ruby-identifier">to_sym</span>}
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
