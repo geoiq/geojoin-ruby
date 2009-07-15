@@ -1,3 +1,272 @@
+Index: source/index/strtree/AbstractSTRtree.cpp
+===================================================================
+--- source/index/strtree/AbstractSTRtree.cpp	(revision 2610)
++++ source/index/strtree/AbstractSTRtree.cpp	(working copy)
+@@ -288,6 +288,20 @@
+ 	}
+ }
+ 
++void
++AbstractSTRtree::iterate(ItemVisitor& visitor)
++{
++    for (BoundableList::const_iterator i=itemBoundables->begin(), e=itemBoundables->end();
++			i!=e; i++)
++	{
++		const Boundable* boundable = *i;
++		if (const ItemBoundable *ib=dynamic_cast<const ItemBoundable *>(boundable))
++		{
++			visitor.visitItem(ib->getItem());
++		}
++        }
++}
++
+ /*protected*/
+ std::auto_ptr<BoundableList>
+ AbstractSTRtree::boundablesAtLevel(int level)
+Index: source/headers/geos/index/strtree/AbstractSTRtree.h
+===================================================================
+--- source/headers/geos/index/strtree/AbstractSTRtree.h	(revision 2610)
++++ source/headers/geos/index/strtree/AbstractSTRtree.h	(working copy)
+@@ -202,6 +202,7 @@
+ 	}
+ 
+ 	virtual AbstractNode* getRoot() {
++                assert(built);
+ 		return root;
+ 	}
+ 
+@@ -219,8 +220,6 @@
+ 		return matches;
+ 	}
+ #endif
+-
+-
+ 	///  Also builds the tree, if necessary.
+ 	void query(const void* searchBounds, ItemVisitor& visitor);
+ 
+@@ -281,6 +280,13 @@
+ 	virtual void query(const void* searchBounds, const AbstractNode* node, std::vector<void*>* matches);
+ 
+ 	/**
++         * Iterate over all items added thus far.  Explicitly does not build
++         * the tree.
++         */
++	void iterate(ItemVisitor& visitor);
++
++
++	/**
+ 	 * @param level -1 to get items
+ 	 */
+ 	virtual void boundablesAtLevel(int level, AbstractNode* top,
+Index: swig/ruby/ruby.i
+===================================================================
+--- swig/ruby/ruby.i	(revision 2610)
++++ swig/ruby/ruby.i	(working copy)
+@@ -104,3 +104,73 @@
+     free((void*) $1);
+   }
+ }
++
++// GeosPreparedGeometry
++// Use predicates to make the ruby code nicer  - so disjoint?
++%rename("contains_properly?") GeosPreparedGeometry::containsProperly;
++%predicate GeosPreparedGeometry::contains;
++%predicate GeosPreparedGeometry::intersects;
++%predicate GeosPreparedGeometry::covers;
++
++// GeosSTRtree
++
++%rename("each") GeosSTRtree::iterate;
++
++%typemap(in) GeosIndexItem
++{
++    $1 = (GeosIndexItem) $input;
++}
++
++/* accumulator will be blissfully unused because
++ * Ruby supports closures, more or less */
++%typemap(in,numinputs=0) (GeosIndexItem accumulator)
++{
++    $1 = (GeosIndexItem) Qnil;
++}
++
++/* typecheck GeosIndexItem and make sure it's really a VALUE */
++%typemap(typecheck) GeosIndexItem
++{
++    $1 = (TYPE($input) & T_MASK) ? 1 : 0;
++}
++
++/* always call the provided block as the query callback */
++%typemap(in,numinputs=0) GeosQueryCallback
++{
++    $1 = GeosSTRtree_query_callback;
++}
++
++%typemap(typecheck) GeosQueryCallback
++{
++    /* SWIG throws a warning if we don't do this */
++    $1 = 1;
++}
++
++%{
++    /* this callback yields the data item to the block */
++    static void GeosSTRtree_query_callback (void *data, void *nothing) {
++        if (rb_block_given_p()) {
++            rb_yield((VALUE) data);
++        }
++    }
++%}
++
++/* assuming that GeosIndexItems are all VALUEs (since this gets tested
++ * on typemap(in)), mark them during the mark phase of GC to hang on to them */
++%{
++    static void GeosSTRtree_mark_item (void *data, void *nothing)
++    {
++        if ((VALUE) data != Qnil) {
++            rb_gc_mark((VALUE)data);
++        }
++    }
++
++    static void mark_GeosSTRtree(void *self)
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        GEOSSTRtree_iterate(tree, GeosSTRtree_mark_item, NULL);
++    }
++%}
++
++%markfunc GeosSTRtree "mark_GeosSTRtree";
++
+Index: swig/geos.i.in
+===================================================================
+--- swig/geos.i.in	(revision 2610)
++++ swig/geos.i.in	(working copy)
+@@ -950,6 +950,126 @@
+ 
+ %clear GeosCoordinateSequence *s;
+ 
++// === Prepared Geometry ===
++
++%{
++typedef void GeosPreparedGeometry;
++%}
++
++%rename (Prepared) GeosPreparedGeometry;
++class GeosPreparedGeometry
++{
++public:
++%extend
++{
++    GeosPreparedGeometry(const GeosGeometry *source)
++    {
++        const GEOSPreparedGeometry *prep = GEOSPrepare((const GEOSGeometry *)source);
++        if(prep == NULL)
++            throw std::runtime_error(message);
++        return (GeosPreparedGeometry *) prep;
++    }
++
++    ~GeosPreparedGeometry()
++    {
++        GEOSPreparedGeometry *prep = (GEOSPreparedGeometry *) self;
++        return GEOSPreparedGeom_destroy(prep);
++    }
++
++    bool contains (const GeosGeometry* other)
++    {
++        GEOSPreparedGeometry *prep = (GEOSPreparedGeometry *) self;
++        GEOSGeom otherGeom = (GEOSGeom) other;
++        return checkBoolResult(GEOSPreparedContains(prep, otherGeom));
++    }
++
++    bool containsProperly(const GeosGeometry* other)
++    {
++        GEOSPreparedGeometry *prep = (GEOSPreparedGeometry *) self;
++        GEOSGeom otherGeom = (GEOSGeom) other;
++        return checkBoolResult(GEOSPreparedContainsProperly(prep, otherGeom));
++    }
++
++    bool covers (const GeosGeometry* other)
++    {
++        GEOSPreparedGeometry *prep = (GEOSPreparedGeometry *) self;
++        GEOSGeom otherGeom = (GEOSGeom) other;
++        return checkBoolResult(GEOSPreparedCovers(prep, otherGeom));
++    }
++
++    bool intersects (const GeosGeometry* other)
++    {
++        GEOSPreparedGeometry *prep = (GEOSPreparedGeometry *) self;
++        GEOSGeom otherGeom = (GEOSGeom) other;
++        return checkBoolResult(GEOSPreparedIntersects(prep, otherGeom));
++    }
++}
++};
++
++// === STRtree ===
++
++%{
++typedef void GeosSTRtree;
++/* GeosIndexItem typedef'd here so it can be %typemap(typecheck)'d
++   as a native object by each language specially */
++typedef void *GeosIndexItem;
++typedef GEOSQueryCallback GeosQueryCallback;
++%}
++
++%rename (STRtree) GeosSTRtree;
++class GeosSTRtree
++{
++public:
++%extend
++{
++    %typemap(default) int nodeCapacity {
++     $1 = 10;
++    };
++    GeosSTRtree(int nodeCapacity)
++    {
++        GEOSSTRtree *tree = GEOSSTRtree_create(nodeCapacity);
++        if(tree == NULL)
++            throw std::runtime_error(message);
++        return (GeosSTRtree *) tree;
++    }
++
++    ~GeosSTRtree()
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        return GEOSSTRtree_destroy(tree);
++    }
++
++    void insert (const GeosGeometry* g, GeosIndexItem item)
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        const GEOSGeometry *geom = (const GEOSGeometry *) g;
++        GEOSSTRtree_insert(tree, geom, item);
++    }
++
++    void remove (const GeosGeometry* g, GeosIndexItem item)
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        const GEOSGeometry *geom = (const GEOSGeometry *) g;
++        GEOSSTRtree_remove(tree, geom, item);
++    }
++
++    void query (const GeosGeometry* g, GeosQueryCallback callback,
++                GeosIndexItem accumulator)
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        const GEOSGeometry *geom = (const GEOSGeometry *) g;
++        GEOSSTRtree_query(tree, geom, callback, accumulator);
++    }
++
++    void iterate (GeosQueryCallback callback, GeosIndexItem accumulator)
++    {
++        GEOSSTRtree *tree = (GEOSSTRtree *) self;
++        GEOSSTRtree_iterate(tree, callback, accumulator);
++    }
++}
++};
++
++
+ // === Input/Output ===
+ 
+ /* This typemap allows the scripting language to pass in buffers
 Index: capi/geos_c.cpp
 ===================================================================
 --- capi/geos_c.cpp	(revision 2610)
