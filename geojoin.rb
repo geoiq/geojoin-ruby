@@ -11,8 +11,6 @@ module Geojoin
     attr_accessor :geometry
     attr_accessor :data
 
-    # The new() method takes two arguments, a geometry, and a data object.
-    # 
     # The geometry object can be either a Geos::Geometry or a string. If it is
     # a string, it must be a geometry in either WKT, WKB, or "WKB hex" format,
     # and the new() method will automagically figure out which. The Feature
@@ -22,10 +20,10 @@ module Geojoin
     def initialize (geometry, data)
       if geometry.kind_of? Geos::Geometry
         @geometry = geometry.clone
-      elsif geometry =~ /^[0-9a-f]$/io
+      elsif geometry =~ /\A[0-9a-f]\Z/io
         # WKB in hex format
         @geometry = wkb_in.readHEX geometry
-      elsif geometry =~ /^[A-Z]/o
+      elsif geometry =~ /\A[A-Z]/o
         # WKT
         @geometry = wkt_in.read geometry
       else
@@ -49,34 +47,62 @@ module Geojoin
 
     public
 
-    # Return the (possibly cached) centroid of the feature's geometry.
-    def centroid
-      contains_centroid? # make sure the centroid is calculated
-      @centroid
+    # Certain operations on invalid geometries can cause exceptions to be
+    # thrown by GEOS. Calling validate! causes the geometry to be tested for
+    # validity, and replaced with a buffered version of the geometry if it is
+    # found to be invalid.
+    #
+    # The validity test can be costly if the geometry is large, and the various
+    # spatial relationship tests in Index don't require it, so it's only worth
+    # calling validate! if you plan to do spatial computations with the
+    # geometry inside an Index query.
+    def validate!
+      @geometry = @geometry.buffer(0) unless @geometry.valid?
     end
 
-    # Does the geometry contain its own centroid? This value is cached
-    # after the first time it's computed.
-    def contains_centroid?
-      unless @centroid
-        @centroid = @geometry.centroid
-        @contains_centroid = @geometry.contains? @centroid
-      end
-      @contains_centroid
+    # True if the feature's geometry has been prepared and
+    # cached for spatial analysis.
+    def prepared?
+      not @prepared.nil?
+    end
+
+    # Cache a prepared version of the feature's geometry to speed up
+    # spatial analysis.
+    #
+    # It turns out that GEOS does not check for geometry validity
+    # when doing containment tests using prepared geometries, so
+    # Index uses these internally by default. The cost
+    # of preparation is not much greater (or sometimes less)
+    # than the validity check.
+    def prepare!
+      @prepared = Geos::Prepared.new(@geometry)
+    end
+
+    # Return a (possibly cached) version of the feature's geometry
+    # prepared for spatial containment analysis.
+    def prepared
+      prepare! unless prepared?
+      @prepared
+    end
+
+    # Return the (possibly cached) centroid of the feature's geometry.
+    def centroid
+      @centroid = @geometry.centroid unless @centroid
+      @centroid
     end
   end
 
   # The Relation class computes the geometric relationship between
   # two features, and provides the full set of DE-9IM predicates:
   #
-  # * equal?
+  # * equals?
   # * disjoint?
-  # * touch?
-  # * overlap?
-  # * cross?
+  # * touches?
+  # * overlaps?
+  # * crosses?
   # * within?
-  # * contain?
-  # * intersect?
+  # * contains?
+  # * intersects?
   class Relation
     attr_accessor :matrix
     # The new() method takes two Feature objects as its arguments.
@@ -85,13 +111,13 @@ module Geojoin
     end
     # implements DE-9IM
     @@predicates = {
-      "equal"     => "T*F**FFF*",
+      "equals"    => "T*F**FFF*",
       "disjoint"  => "FF*FF****",
-      "touch"     => "FT*******|F**T*****|F***T****",
-      "overlap"   => "T*T***T**",
-      "cross"     => "T*T******|0********",
+      "touches"   => "FT*******|F**T*****|F***T****",
+      "overlaps"  => "T*T***T**",
+      "crosses"   => "T*T******|0********",
       "within"    => "T*F**F***",
-      "contain"   => "T*****FF*",
+      "contains"  => "T*****FF*",
     }
     @@predicates.each do |key, match|
       match = match.gsub("T", "\\d").gsub("*", ".")
@@ -100,13 +126,13 @@ module Geojoin
         (@matrix =~ match) ? true : false
       end
     end
-    # DE-9IM defines intersect? as the inverse of disjoint?
-    def intersect?
+    # DE-9IM defines intersects? as the inverse of disjoint?
+    def intersects?
       not disjoint?
     end
     # The predicates() class method returns the list of available predicates.
     def self.predicates
-      (@@predicates.keys + ["intersect"]).map {|pred| "#{pred}?".to_sym}
+      (@@predicates.keys + ["intersects"]).map {|pred| "#{pred}?".to_sym}
     end
   end
 
@@ -178,34 +204,27 @@ module Geojoin
     # that are contained by the query feature, and yields each to the given
     # block. Presumes that the query feature is a (multi)polygon.
     #
-    # The precise algorithm used for testing for containment is as follows:
+    # The precise method used for testing for containment is as follows:
     #
-    # * Does the indexed feature contain its own centroid, and, if so, then
-    #   does the query feature contain the indexed feature's centroid?
-    # * Otherwise, does the query feature completely contain the
-    #   indexed feature?
+    # * Does the query feature completely contain the indexed feature?
     # * Otherwise, does the query feature contain the indexed feature's
     #   centroid, *and* intersect with the indexed feature?
     #
     # Using these criteria, every feature in the index will be
     # mapped one-to-one with a set of non-overlapping query geometries
-    # encompassing the geometric plane.
+    # encompassing the geometric plane, except for those which overlap
+    # more than one feature *and* have a centroid lying precisely on
+    # a topological boundary.
     #
     # Calling this method causes the index to become read-only.
     def contained_by (feature)
       type_check feature
       polygon_check feature
-      prepared = Geos::Prepared.new(feature.geometry)
+      prepared = feature.prepared
       built_tree.query(feature.geometry) {|match|
-        if match.contains_centroid?
-          contained = prepared.contains_properly? match.centroid
-        else
-          contained = prepared.contains_properly? match.geometry
-          unless contained
-            contained = prepared.contains_properly?(match.centroid) \
-                    and prepared.intersects?(match.geometry)
-          end
-        end
+        contained = prepared.contains_properly?(match.geometry) or (
+                      prepared.intersects?(match.geometry) and 
+                      prepared.contains_properly?(match.centroid))
         yield match if contained
       }
     end
@@ -217,9 +236,9 @@ module Geojoin
     # Calling this method causes the index to become read only.
     def intersects_with (feature)
       type_check feature
-      prepared = Geos::Prepared.new(feature.geometry)
       built_tree.query(feature.geometry) {|match|
-        yield match if prepared.intersects? match.geometry
+        intersects = feature.prepared.intersects? match.geometry
+        yield match if intersects
       }
     end
 
