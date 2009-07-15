@@ -1,0 +1,84 @@
+Sussex,Fenwick Island,212FF1FF2
+Sussex,Delmar,212101212
+Sussex,Selbyville,212FF1FF2
+Sussex,South Bethany,212FF1FF2
+Sussex,Frankford,212FF1FF2
+Sussex,Bethany Beach,212FF1FF2
+Sussex,Ocean View,212FF1FF2
+Sussex,Dagsboro,212FF1FF2
+Sussex,Millville,212FF1FF2
+Sussex,Laurel,212FF1FF2
+Sussex,Bethel,212FF1FF2
+Sussex,Millsboro,
+Sussex,Long Neck,212FF1FF2
+Sussex,Blades,212FF1FF2
+Sussex,Seaford,212FF1FF2
+Sussex,Georgetown,212FF1FF2
+Sussex,Dewey Beach,212FF1FF2
+Sussex,Rehoboth Beach,212FF1FF2
+Sussex,Henlopen Acres,212FF1FF2
+Sussex,Bridgeville,212FF1FF2
+Sussex,Milton,212FF1FF2
+Sussex,Lewes,212FF1FF2
+Sussex,Greenwood,212FF1FF2
+Sussex,Ellendale,212FF1FF2
+Sussex,Farmington,FF2FF1212
+Sussex,Milford,212101212
+Sussex,Slaughter Beach,212FF1FF2
+Sussex,Houston,FF2FF1212
+Sussex,Harrington,FF2FF1212
+Sussex,Frederica,FF2FF1212
+Sussex,Felton,FF2FF1212
+New Castle,Clayton,212111212
+New Castle,Smyrna,212111212
+New Castle,Townsend,
+New Castle,Middletown,212FF1FF2
+New Castle,Odessa,212FF1FF2
+New Castle,Delaware City,212FF1FF2
+New Castle,Glasgow,212F11FF2
+New Castle,Bear,212FF1FF2
+New Castle,Brookside,212FF1FF2
+New Castle,New Castle,212FF1FF2
+New Castle,Newark,212101212
+New Castle,Wilmington Manor,212FF1FF2
+New Castle,Newport,212FF1FF2
+New Castle,Wilmington,212111212
+New Castle,Pike Creek,212FF1FF2
+New Castle,Elsmere,212FF1FF2
+New Castle,Edgemoor,212FF1FF2
+New Castle,North Star,212111212
+New Castle,Bellefonte,212FF1FF2
+New Castle,Greenville,212FF1FF2
+New Castle,Hockessin,212111212
+New Castle,Claymont,212101212
+New Castle,Ardencroft,212FF1FF2
+New Castle,Ardentown,212FF1FF2
+New Castle,Arden,212FF1FF2
+Kent,Farmington,212FF1FF2
+Kent,Milford,212111212
+Kent,Slaughter Beach,FF2FF1212
+Kent,Houston,212FF1FF2
+Kent,Harrington,212FF1FF2
+Kent,Frederica,212FF1FF2
+Kent,Felton,212FF1FF2
+Kent,Riverview,212FF1FF2
+Kent,Viola,212FF1FF2
+Kent,Bowers,212FF1FF2
+Kent,Woodside East,212FF1FF2
+Kent,Woodside,212FF1FF2
+Kent,Magnolia,212FF1FF2
+Kent,Rising Sun-Lebanon,212FF1FF2
+Kent,Camden,212FF1FF2
+Kent,Highland Acres,212FF1FF2
+Kent,Dover Base Housing,212FF1FF2
+Kent,Wyoming,212FF1FF2
+Kent,Rodney Village,212FF1FF2
+Kent,Kent Acres,212FF1FF2
+Kent,Dover,212FF1FF2
+Kent,Little Creek,212FF1FF2
+Kent,Hartly,212FF1FF2
+Kent,Cheswold,212FF1FF2
+Kent,Kenton,212FF1FF2
+Kent,Leipsic,212FF1FF2
+Kent,Clayton,212111212
+Kent,Smyrna,212111212
