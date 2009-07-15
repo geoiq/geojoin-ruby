@@ -30,6 +30,15 @@ def test_contain (out, index, features, quiet=false)
   }
 end
 
+def test_intersect (out, index, features, quiet=false)
+  features.each {|feat1|
+    index.intersects_with(feat1) {|feat2|
+      out.print "#{feat1.data},#{feat2.data}\n"
+    }
+  }
+end
+
+
 def test_relate (out, index, features, quiet=false)
   features.each {|feat1|
     index.relates_to(feat1) {|feat2, relation|
@@ -46,6 +55,7 @@ def do_test
   features = load_features(ARGV[0], ARGV[1])
   index = load_index(ARGV[2], ARGV[3])
   test_contain(File.new("contain.txt","w"),index, features)
+  test_intersect(File.new("intersect.txt","w"),index, features)
   test_relate(File.new("relate.txt","w"),index, features)
   test_count(File.new("count.txt","w"),index, features)
 end

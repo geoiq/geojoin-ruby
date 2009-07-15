@@ -75,5 +75,7 @@ def do_benchmark
   GC.enable
 end
 
+ARGV = ["de_county.shp","NAME","de_place.shp","NAME"] unless ARGV.any?
+raise "bench.rb <shape1> <field1> <shape2> <field2>" unless ARGV.length == 4
 do_test
 do_benchmark
