@@ -7,12 +7,10 @@
 
 = Patch and build GEOS
 
-This section will be revised when the patches submitted
-to the GEOS project are added to SVN.
+N.B. this step will become unnecessary after GEOS 3.2.0 is released.
 
   svn checkout http://svn.osgeo.org/geos/trunk geos-svn
   cd geos-svn
-  patch -p0 <../geos.diff
   ./autogen.sh
   ./configure --enable-ruby
   make
