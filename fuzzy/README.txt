@@ -8,7 +8,18 @@ measure. Fuzzymatch is built on PATL, a BSD licensed library, from Google Code:
 
 = Prerequisites
 
-You will need Ruby, g++, and SWIG (>= 1.3) to build the gem.
+You will need Ruby, g++, and SWIG (>= 1.3) to build the fuzzymatch library.
+
+= Building fuzzymatch
+
+You can simply build and install the gem:
+
+  gem build fuzzymatch.gemspec
+
+If you don't want to install the gem, you can build fuzzymatch manually:
+
+  ruby extconf.rb
+  make
 
 = Synopsis
 
