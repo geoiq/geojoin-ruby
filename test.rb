@@ -36,6 +36,35 @@ class TestGeojoinIndex < Test::Unit::TestCase
     assert_equal point.geometry.coord_seq.get_y(0), 456.0
     assert_equal point.data, "test"
   end
+  def test_geos
+    point = Geojoin::Feature.new("POINT(0 0)", "point")
+    poly  = Geojoin::Feature.new("POLYGON((-1 -1, -1 1, 1 1, 1 -1, -1 -1))", "poly")
+    assert poly.geometry.contains? point.geometry
+    prepared = Geos::Prepared.new(poly.geometry)
+    assert prepared.contains_properly? point.geometry
+    assert prepared.contains? point.geometry
+  end
+  def test_point_in_poly
+    point = Geojoin::Feature.new("POINT(0 0)", "point")
+    poly  = Geojoin::Feature.new("POLYGON((-1 -1, -1 1, 1 1, 1 -1, -1 -1))", "poly")
+    index = Geojoin::Index.new
+    index << point
+    found = false
+    index.contained_by(poly) {|f| found = f.data}
+    assert_equal found, "point"
+  end
+  def test_point_in_multipoly
+    point = Geojoin::Feature.new("POINT(0 0)", "point")
+    poly  = Geojoin::Feature.new("MULTIPOLYGON(((-5 -4, -4 -4, -4 -5, -5 -5, -5 -4))," + 
+                                 "((-1 -1, -1 1, 1 1, 1 -1, -1 -1)))", "poly")
+    #writer = Geos::WktWriter.new
+    #p writer.write(poly.geometry.envelope)
+    index = Geojoin::Index.new
+    index << point
+    found = false
+    index.contained_by(poly) {|f| found = f.data}
+    assert_equal found, "point"
+  end
   def test_type_check
     begin
       @index << 5
