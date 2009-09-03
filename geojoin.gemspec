@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
     s.email         = 'schuyler@entropyfree.com'
     s.description   = "Fast in-memory spatial indexing and lookup."
     s.summary       = s.description + " Depends on GEOS Ruby bindings."
-    s.files         = ["geojoin.rb"]
+    s.files         = ["lib/geojoin.rb"]
     s.test_files    = ["test.rb"] + Dir["sample/*"]
     s.has_rdoc      = true
     s.extra_rdoc_files  =   ["README.txt", "INSTALL.txt"]
