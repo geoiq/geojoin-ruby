@@ -20,9 +20,9 @@ module Geojoin
     def initialize (geometry, data)
       if geometry.kind_of? Geos::Geometry
         @geometry = geometry.clone
-      elsif geometry =~ /\A[0-9a-f]\Z/io
+      elsif geometry =~ /\A[0-9a-f]+\Z/io
         # WKB in hex format
-        @geometry = wkb_in.readHEX geometry
+        @geometry = wkb_in.read_hex geometry
       elsif geometry =~ /\A[A-Z]/o
         # WKT
         @geometry = wkt_in.read geometry

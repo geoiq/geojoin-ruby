@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'geo_ruby'
-require 'geojoin'
+require 'lib/geojoin'
 require 'test/unit'
 
 class TestGeojoinIndex < Test::Unit::TestCase
@@ -146,5 +146,8 @@ class TestGeojoinIndex < Test::Unit::TestCase
       count += 1
     }
     assert_equal count, fixture.length
+  end
+  def test_wkb
+    Geojoin::Feature.new("01010000008EBCA5D242855EC038FA71980DB64240", "point")
   end
 end
