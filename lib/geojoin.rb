@@ -17,13 +17,13 @@ module Geojoin
     # class stores geometries internally as Geos::Geometry objects.
     #
     # The data argument can be any Ruby object.
-    def initialize (geometry, data)
-      if geometry.kind_of? Geos::Geometry
+    def initialize (geometry, data, type=nil)
+      if ((type =~ /geos/) || (geometry.kind_of?( Geos::Geometry)))
         @geometry = geometry.clone
-      elsif geometry =~ /\A[0-9a-f]\Z/io
+      elsif ((type =~ /hex/) || geometry =~ /\A[0-9a-f]\Z/io)
         # WKB in hex format
-        @geometry = wkb_in.readHEX geometry
-      elsif geometry =~ /\A[A-Z]/o
+        @geometry = wkb_in.read_hex geometry
+      elsif ((type =~ /wkt/) || geometry =~ /\A[A-Z]/o)
         # WKT
         @geometry = wkt_in.read geometry
       else

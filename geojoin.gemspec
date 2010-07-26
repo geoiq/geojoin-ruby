@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
     s.name          = 'Geojoin'
-    s.version       = "1.0.0"
-    s.author        = "Schuyler Erle"
-    s.email         = 'schuyler@entropyfree.com'
+    s.version       = "1.0.1"
+    s.author        = "Schuyler Erle for FortiusOne"
+    s.email         = 'admin@fortiusone.com'
     s.description   = "Fast in-memory spatial indexing and lookup."
     s.summary       = s.description + " Depends on GEOS Ruby bindings."
     s.files         = ["lib/geojoin.rb"]

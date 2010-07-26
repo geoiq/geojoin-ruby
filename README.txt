@@ -1,4 +1,4 @@
-Author:: Schuyler Erle <schuyler@entropyfree.com>
+Author:: Schuyler Erle <schuyler@entropyfree.com>, for FortiusOne
 
 The Geojoin library provides a mechanism for building an in-memory spatial
 index of a set of geographic features, and for efficiently querying that
