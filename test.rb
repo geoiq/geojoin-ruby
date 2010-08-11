@@ -150,4 +150,20 @@ class TestGeojoinIndex < Test::Unit::TestCase
   def test_wkb
     Geojoin::Feature.new("01010000008EBCA5D242855EC038FA71980DB64240", "point")
   end
+  def test_within
+    g_feature = GeoRuby::SimpleFeatures::Polygon.from_coordinates([[
+        [-120, 30],
+        [-120, 40],
+        [-100, 40],
+        [-100, 30],
+        [-120, 30],
+        ]])
+    feature = Geojoin::Feature.new(g_feature.as_hex_ewkb, nil, "hex")
+    index = Geojoin::Index.new
+    index << Geojoin::Feature.new("01010000000000000000C05CC00000000000804140", "point 1", "hex")
+    index << Geojoin::Feature.new("01010000000000000000C05CC00000000000804640", "point 2", "hex")
+    index.contained_by(feature) do  |c|
+      assert_equal "point 1", c.data
+    end
+  end
 end

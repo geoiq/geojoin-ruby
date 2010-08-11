@@ -21,6 +21,7 @@ module Geojoin
       if ((type =~ /geos/) || (geometry.kind_of?( Geos::Geometry)))
         @geometry = geometry.clone
       elsif ((type =~ /hex/) || geometry =~ /\A[0-9a-fA-F]+\Z/io)
+        
         # WKB in hex format
         @geometry = wkb_in.read_hex geometry
       elsif ((type =~ /wkt/) || geometry =~ /\A[A-Z]/o)
